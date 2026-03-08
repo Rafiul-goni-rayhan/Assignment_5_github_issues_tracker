@@ -192,3 +192,80 @@ async function handleSearch() {
     console.error("Search failed:", error);
   }
 }
+
+async function showDetails(id) {
+    const modal = document.getElementById('issue_modal');
+    const modalContent = document.getElementById('modal-content');
+   
+    modalContent.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-20 gap-4">
+            <span class="loading loading-spinner loading-lg text-[#641aff]"></span>
+            <p class="text-gray-400 font-bold animate-pulse">Loading details...</p>
+        </div>
+    `;
+    modal.showModal();
+
+    try {
+        const res = await fetch(`https://phi-lab-server.vercel.app/api/v1/lab/issue/${id}`);
+        const result = await res.json();
+
+        const issue = result.data ? result.data : result;
+
+        if (!issue || !issue.title) {
+            throw new Error("Invalid issue data");
+        }
+
+        const pColor = issue.priority?.toLowerCase() === 'high' ? 'bg-red-500' : 'bg-blue-500';
+        const sColor = issue.status?.toLowerCase() === 'open' ? 'bg-[#00ba71]' : 'bg-purple-600';
+
+        modalContent.innerHTML = `
+            <div class="font-[Geist]">
+                <h2 class="text-3xl font-bold text-[#1e293b] mb-4">${issue.title}</h2>
+                
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="px-4 py-1 ${sColor} text-white rounded-full text-sm font-medium">
+                        ${issue.status ? issue.status.charAt(0).toUpperCase() + issue.status.slice(1) : 'Unknown'}
+                    </span>
+                    <span class="text-gray-400 text-sm">
+                        • Opened by <span class="font-medium text-gray-600">${issue.author || 'Anonymous'}</span> 
+                        • ${issue.createdAt ? new Date(issue.createdAt).toLocaleDateString('en-GB') : 'N/A'}
+                    </span>
+                </div>
+
+                <div class="flex gap-2 mb-8">
+                    <span class="px-3 py-1 bg-red-50 text-red-500 text-xs font-bold rounded-full border border-red-100 flex items-center gap-1">
+                        <i class="fa-solid fa-bug"></i> BUG
+                    </span>
+                    <span class="px-3 py-1 bg-yellow-50 text-yellow-600 text-xs font-bold rounded-full border border-yellow-100 flex items-center gap-1">
+                        <i class="fa-solid fa-life-ring"></i> HELP WANTED
+                    </span>
+                </div>
+
+                <p class="text-gray-500 leading-relaxed mb-10 text-lg">
+                    ${issue.description || 'No description provided.'}
+                </p>
+
+                <div class="grid grid-cols-2 gap-8 bg-gray-50 p-6 rounded-2xl">
+                    <div>
+                        <p class="text-gray-400 text-sm mb-2 font-medium">Assignee:</p>
+                        <p class="font-bold text-gray-800 text-lg">@${issue.author || 'Not Assigned'}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 text-sm mb-2 font-medium">Priority:</p>
+                        <span class="px-4 py-1 ${pColor} text-white text-xs font-bold rounded-full uppercase">
+                            ${issue.priority || 'Medium'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `;
+    } catch (err) {
+        console.error("Error fetching issue details:", err);
+        modalContent.innerHTML = `
+            <div class="text-center py-10">
+                <i class="fa-solid fa-circle-exclamation text-red-500 text-4xl mb-4"></i>
+                <p class="text-red-500 font-bold">ডেটা লোড করতে ব্যর্থ হয়েছে!</p>
+            </div>
+        `;
+    }
+}
