@@ -129,3 +129,42 @@ function updateStats() {
   document.getElementById("open-count").innerText = `${openCount} Open`;
   document.getElementById("closed-count").innerText = `${closedCount} Closed`;
 }
+
+function filterIssues(status) {
+  const buttonIds = ["tab-all", "tab-open", "tab-closed"];
+  buttonIds.forEach((id) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.style.backgroundColor = "white";
+      btn.style.color = "#6b7280";
+      btn.style.borderColor = "#e5e7eb";
+      btn.classList.remove("text-white");
+      btn.classList.add("text-gray-500", "border");
+    }
+  });
+
+  const activeBtn = document.getElementById(`tab-${status}`);
+  if (activeBtn) {
+    activeBtn.style.backgroundColor = "#641aff";
+    activeBtn.style.color = "white";
+    activeBtn.style.borderColor = "#641aff";
+    activeBtn.classList.add("text-white");
+    activeBtn.classList.remove("text-gray-500");
+  }
+
+  let filtered;
+  if (status === "all") {
+    filtered = allIssues;
+  } else {
+    filtered = allIssues.filter(
+      (issue) => issue.status.toLowerCase() === status,
+    );
+  }
+
+  const totalCountEl = document.getElementById("total-count");
+  if (totalCountEl) {
+    totalCountEl.innerText = `${filtered.length} Issues`;
+  }
+
+  renderCards(filtered);
+}
