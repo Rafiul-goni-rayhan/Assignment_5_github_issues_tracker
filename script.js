@@ -22,7 +22,7 @@ async function fetchIssues() {
   const container = document.getElementById("issues-container");
   if (!container) return;
 
-  container.innerHTML = `<p class="text-center col-span-full">লোড হচ্ছে...</p>`;
+  container.innerHTML = `<p class="text-center col-span-full">loading...</p>`;
 
   try {
     const response = await fetch(
@@ -49,7 +49,7 @@ function renderCards(issues) {
   container.innerHTML = "";
 
   if (issues.length === 0) {
-    container.innerHTML = `<p class="text-center col-span-full mt-10 text-gray-400">কোনো তথ্য পাওয়া যায়নি!</p>`;
+    container.innerHTML = `<p class="text-center col-span-full mt-10 text-gray-400">no info found</p>`;
     return;
   }
 
@@ -301,7 +301,7 @@ async function showDetails(id) {
         modalContent.innerHTML = `
             <div class="text-center py-10">
                 <i class="fa-solid fa-circle-exclamation text-red-500 text-4xl mb-4"></i>
-                <p class="text-red-500 font-bold">ডেটা লোড করতে ব্যর্থ হয়েছে!</p>
+                <p class="text-red-500 font-bold">failed to load data </p>
             </div>
         `;
     }
