@@ -113,3 +113,19 @@ function renderCards(issues) {
     container.appendChild(card);
   });
 }
+
+
+function updateStats() {
+  const total = allIssues.length;
+  const openCount = allIssues.filter(
+    (i) => i.status.toLowerCase() === "open",
+  ).length;
+  const closedCount = allIssues.filter(
+    (i) => i.status.toLowerCase() === "closed",
+  ).length;
+
+
+  document.getElementById("total-count").innerText = `${total} Issues`;
+  document.getElementById("open-count").innerText = `${openCount} Open`;
+  document.getElementById("closed-count").innerText = `${closedCount} Closed`;
+}
