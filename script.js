@@ -269,3 +269,21 @@ async function showDetails(id) {
         `;
     }
 }
+
+
+function changeStatus(id, newStatus) {
+  const issue = allIssues.find((i) => i.id == id);
+  if (issue) {
+    issue.status = newStatus;
+    updateStats();
+
+    const currentTab = document
+      .querySelector(".tab-active")
+      .id.replace("tab-", "");
+    if (currentTab === "all") {
+      renderCards(allIssues);
+    } else {
+      filterIssues(currentTab);
+    }
+  }
+}
