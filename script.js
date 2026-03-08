@@ -169,29 +169,7 @@ function filterIssues(status) {
   renderCards(filtered);
 }
 
-// async function handleSearch() {
-//   const searchText = document.getElementById("search-input").value;
-//   const container = document.getElementById("issues-container");
 
-//   if (!searchText) {
-//     renderCards(allIssues);
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch(
-//       `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`,
-//     );
-//     const searchResult = await response.json();
-
-//     const results = Array.isArray(searchResult)
-//       ? searchResult
-//       : searchResult.data || [];
-//     renderCards(results);
-//   } catch (error) {
-//     console.error("Search failed:", error);
-//   }
-// }
 async function handleSearch() {
     const searchText = document.getElementById("search-input").value;
     const container = document.getElementById("issues-container");
