@@ -169,28 +169,65 @@ function filterIssues(status) {
   renderCards(filtered);
 }
 
+// async function handleSearch() {
+//   const searchText = document.getElementById("search-input").value;
+//   const container = document.getElementById("issues-container");
+
+//   if (!searchText) {
+//     renderCards(allIssues);
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch(
+//       `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`,
+//     );
+//     const searchResult = await response.json();
+
+//     const results = Array.isArray(searchResult)
+//       ? searchResult
+//       : searchResult.data || [];
+//     renderCards(results);
+//   } catch (error) {
+//     console.error("Search failed:", error);
+//   }
+// }
 async function handleSearch() {
-  const searchText = document.getElementById("search-input").value;
-  const container = document.getElementById("issues-container");
+    const searchText = document.getElementById("search-input").value;
+    const container = document.getElementById("issues-container");
 
-  if (!searchText) {
-    renderCards(allIssues);
-    return;
-  }
+    if (!searchText) {
+        renderCards(allIssues);
+        updateStats();
+        return;
+    }
+    container.innerHTML = `
+        <div class="col-span-full flex flex-col items-center justify-center py-20 gap-4">
+            <span class="loading loading-spinner loading-lg text-[#641aff]"></span>
+            <p class="text-gray-400 font-bold animate-pulse">Searching issues...</p>
+        </div>
+    `;
 
-  try {
-    const response = await fetch(
-      `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`,
-    );
-    const searchResult = await response.json();
+    try {
+        const response = await fetch(
+            `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`
+        );
+        const searchResult = await response.json();
 
-    const results = Array.isArray(searchResult)
-      ? searchResult
-      : searchResult.data || [];
-    renderCards(results);
-  } catch (error) {
-    console.error("Search failed:", error);
-  }
+        const results = Array.isArray(searchResult)
+            ? searchResult
+            : searchResult.data || [];
+
+    
+        renderCards(results);
+        const totalCountEl = document.getElementById('total-count');
+        if (totalCountEl) {
+            totalCountEl.innerText = `${results.length} Search Results`;
+        }
+    } catch (error) {
+        console.error("Search failed:", error);
+        container.innerHTML = `<p class="text-center col-span-full text-red-500 py-10">failed to search</p>`;
+    }
 }
 
 async function showDetails(id) {
